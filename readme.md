@@ -3,8 +3,10 @@ Người thực hiện: Lê Trần Văn Chương.
 Ngày: 16/05/2022.
 
 Mục lục:
-- Server Side Template Injection (SSTI)
-- Lab
+- [Server Side Template Injection (SSTI)](#server-side-template-injection-ssti)
+  - [Plaintext context:](#plaintext-context)
+  - [Code context](#code-context)
+- [Lab](#lab)
 
 
 ## Server Side Template Injection (SSTI)
@@ -12,7 +14,7 @@ Mục lục:
 - Khi một lỗ hổng SSTI bị phát hiện, hacker có thể thông qua lỗ hổng này để đọc được các biến môi trường quan trọng hoặc nâng lỗ hổng lên thành các lỗ hổng khác như XSS hay RCE.
 - Ký tự mà hacker dùng để tiêm vào input sẽ tùy thuộc vào template cũng như ngôn ngữ backend mà web server đang sử dụng. Các ứng dụng web thường sử dụng các hệ thống mẫu như Twig và FreeMarker để nhúng nội dung động vào các trang web và email.
 - Lỗ hổng bảo mật này có thể xuất hiện trong hai ngữ cảnh riêng biệt, mỗi ngữ cảnh yêu cầu phương pháp phát hiện riêng:
-    1. Plaintext context:
+### Plaintext context:
         - Hầu hết các ngôn ngữ mẫu hỗ trợ ngữ cảnh 'text' dạng tự do nơi bạn có thể nhập trực tiếp HTML. Nó thường sẽ xuất hiện theo một trong những cách sau:
         ```HTML
         smarty=Hello {user.name}
@@ -31,7 +33,7 @@ Mục lục:
 
         - Đều này dẫn đến tấn công `XSS`.
     
-    2. Code context
+### Code context
         - Đầu vào của người dùng cũng có thể được đặt trong một đoạn code mẫu, thường là một tên biến:
         ```
         personal_greeting=username
